@@ -1,0 +1,80 @@
+urlDirSearch = "fr/recherche"
+inSearchSym = "controller=search&s="
+inGenderSym = null
+inDateSym = null
+inPriceMinSym = null
+inPriceMaxSym = null
+
+xpWrapper = "/html/body/main/section/div/div/div[2]/section/section/div[3]/div/div/ul"
+xpCell = "li"
+xpTitle = "div/div[2]/h3/a"
+xpPrice = "div/div[2]/div[1]/span"
+
+xpLeftElem = "/html/body/main/section/div/div/div/section/section/div/div/div[2]/section[1]/dl/dt"
+xpRightElem = "/html/body/main/section/div/div/div/section/section/div/div/div[2]/section[1]/dl/dl"
+
+ssl_enabled = false
+include script/include/scrapDependency
+include script/include/searchQuery
+
+wrap = xpGet(page, xpWrapper)
+if ((wrap == null) || (wrap.length() == 0))
+    println(wrap.length())
+    println("Error: No output found in \"" + searchQuery + "\"")
+    println(xpWrapper)
+	return
+endif
+block = wrap.get(0)
+if (block == null)
+    println("Error: No output found in \"" + searchQuery + "\"")
+    return
+endif
+cell = xpGet(block, xpCell)
+if (empty(cell) == true)
+    println("Error: No output found in \"" + searchQuery + "\"")
+    return
+endif
+lenCell = cell.length()
+i = 0
+while (i < lenCell)
+    item = cell.get(i)
+    title = ""
+    gender = "0"
+    date = ""
+    price = ""
+    source = ""
+
+    block = xpGet(item, xpTitle)
+    println(block.getAttribute("href")) // Debug
+    source = baseDomain + block.get(0).getAttribute("href").substring(1)
+    title = block.get(0).getText()
+    block = xpGet(item, xpPrice)
+    price = block.getText()
+    price = price.split("€")
+    price = price.get(0)
+    itemPage = webClient.loadPage(source)
+    if (itemPage == null)
+        continue
+    endif
+    wrapLeft = xpGet(itemPage, xpLeftElem)
+    wrapRight = xpGet(itemPage, xpRightElem)
+    if (wrap != null)
+        lenInfo = wrapLeft.length()
+        j = 0
+        while (j < lenInfo)
+            dataName = wrapLeft.get(i)
+            dataName = dataName.getText()
+            dataValue = wrapRight.get(i)
+            dataValue = dataValue.getText()
+
+            if (dataName == "Year")
+                date = dataValue
+            endif
+            j += 1
+        wend
+    endif
+    outputTable.add(newRow(title, gender, date, price, source))
+    pause(250)
+    i += 1
+wend
+webClient.close()

@@ -1,0 +1,12 @@
+outputTable Table scrap s title s gender s date f price s source
+
+func newRow(title, gender, date, price, source)
+	row Array
+	row.add(title.escape())
+	row.add(gender)
+	row.add(date.escape())
+	row.add(price)
+	row.add(source.escape())
+	return (row)
+endfunc
+

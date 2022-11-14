@@ -1,0 +1,9 @@
+urlGet = searchQuery
+webClient WebClient
+print("Loading : [" + urlGet + "] ... ")
+page = webClient.loadPage(urlGet)
+if (page == null)
+    println("Failed")
+	return
+endif
+println("Success")

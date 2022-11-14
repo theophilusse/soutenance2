@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Reflection?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="648.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.exojavafx.RootController">
+   <children>
+      <AnchorPane prefHeight="329.0" prefWidth="600.0">
+         <children>
+            <Text fx:id="welcome" fill="#808080" layoutX="31.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Recherche Vinyl" underline="true" wrappingWidth="218.935546875">
+               <font>
+                  <Font size="21.0" />
+               </font></Text>
+            <ImageView fx:id="imgLogo" fitHeight="47.0" fitWidth="132.0" layoutX="506.0" layoutY="40.0" onMouseClicked="#beast" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../images/poussin.png" />
+               </image>
+               <effect>
+                  <Reflection />
+               </effect>
+            </ImageView>
+            <MenuBar layoutY="1.0" prefHeight="27.0" prefWidth="600.0">
+              <menus>
+                <Menu mnemonicParsing="false" text="Fichier">
+                  <items>
+                    <MenuItem fx:id="bSaveFile" mnemonicParsing="false" onAction="#saveFile" text="Enregistrer dans un fichier" />
+                        <MenuItem fx:id="bSendMail" mnemonicParsing="false" onAction="#mailSend" text="Envoi Courriel" />
+                        <MenuItem fx:id="bDBSave" mnemonicParsing="false" onAction="#dbSend" text="Enregistrer dans la base de donnees" />
+                        <MenuItem fx:id="bQuit" mnemonicParsing="false" onAction="#close" text="Quitter" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Parametres">
+                  <items>
+                    <MenuItem fx:id="bDBSettings" mnemonicParsing="false" onAction="#dbSettings" text="Base de donnees" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Aide">
+                  <items>
+                    <MenuItem fx:id="bGuide" mnemonicParsing="false" onAction="#guide" text="Mode d'emploi" />
+                        <MenuItem fx:id="bGuideTech" mnemonicParsing="false" onAction="#guideTechnical" text="Documentation technique" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <TextField fx:id="fTitle" layoutX="88.0" layoutY="101.0" />
+            <Label layoutX="31.0" layoutY="105.0" text="Titre" />
+            <ComboBox fx:id="fGender" layoutX="88.0" layoutY="145.0" prefHeight="24.0" prefWidth="171.0" promptText="Genre">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:id="default" fx:value="Selectionnez un genre" />
+                        <String fx:id="Rock" fx:value="Rock" />
+                        <String fx:id="Blues" fx:value="Blues" />
+                        <String fx:id="Jazz" fx:value="Jazz" />
+                        <String fx:id="Reggae" fx:value="Reggae" />
+                        <String fx:id="Funk" fx:value="Funk" />
+                        <String fx:id="Electro" fx:value="Electro" />
+                        <String fx:id="Dubstep" fx:value="Dubstep" />
+                        <String fx:id="Soul" fx:value="Soul" />
+                    </FXCollections>
+                </items>
+            </ComboBox>
+            <Label layoutX="26.0" layoutY="149.0" text="Genre" />
+            <Label layoutX="31.0" layoutY="195.0" text="Date" />
+            <Label layoutX="35.0" layoutY="238.0" text="Prix" />
+            <DatePicker fx:id="fDate" layoutX="88.0" layoutY="191.0" prefHeight="24.0" prefWidth="171.0" />
+            <TextField fx:id="fPriceMin" layoutX="88.0" layoutY="234.0" prefHeight="24.0" prefWidth="46.0" text="0" />
+            <TextField fx:id="fPriceMax" layoutX="193.0" layoutY="234.0" prefHeight="24.0" prefWidth="46.0" />
+            <Label layoutX="140.0" layoutY="238.0" text="€ à" />
+            <Label layoutX="249.0" layoutY="238.0" text="€" />
+            <Button fx:id="bSearch" layoutX="80.0" layoutY="284.0" mnemonicParsing="false" onAction="#search" text="Rechercher" />
+            <Button fx:id="bClear" layoutX="185.0" layoutY="284.0" mnemonicParsing="false" text="Effacer" />
+            <Label layoutX="286.0" layoutY="79.0" text="Sites ciblés" />
+            <Button fx:id="bRefresh" layoutX="286.0" layoutY="285.0" mnemonicParsing="false" onAction="#refreshSite" text="Rafraîchir" />
+            <HBox fx:id="hbox" layoutX="286.0" layoutY="101.0" prefHeight="162.0" prefWidth="208.0">
+               <children>
+                  <ScrollPane fx:id="pane" prefHeight="188.0" prefWidth="300.0">
+                    <content>
+                      <AnchorPane>
+                           <children>
+                              <ListView fx:id="listView" prefHeight="162.0" prefWidth="208.0" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </ScrollPane>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+      <ScrollPane prefHeight="323.0" prefWidth="600.0">
+         <content>
+            <TextArea fx:id="outputZone" prefHeight="308.0" prefWidth="587.0" />
+         </content>
+      </ScrollPane>
+   </children>
+</VBox>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyReleased="#keyReleased" prefHeight="248.0" prefWidth="392.0" spacing="15.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.exojavafx.DatabaseSendController">
+   <children>
+      <Label alignment="CENTER" contentDisplay="CENTER" text="Transmission des donnees a la base de donnees" />
+      <Label alignment="CENTER" contentDisplay="CENTER" text="Cliquez sur Valider pour lancer la transmission:" />
+      <Button fx:id="bValidate" mnemonicParsing="false" onAction="#send" text="Valider" />
+      <Button fx:id="bClose" mnemonicParsing="false" onAction="#close" text="Annuler" />
+   </children>
+</VBox>

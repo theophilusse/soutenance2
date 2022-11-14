@@ -1,0 +1,37 @@
+. Introduction .
+
+    Cette application sert à rechercher des vinyles sur
+    Internet de manière automatisée, à l'aide des scripts
+    relatifs à chaques sites source, afin d'en exporter le
+    résultat sous différentes formes.
+
+
+. Recherche .
+
+    Dans un premier temps, faites une recherche en
+    remplissant le ou les formulaires appropriés.
+    Puis, cochez le ou les sites cibles à scanner.
+    Enfin, cliquez sur le bouton "Rechercher" pour procéder
+    au téléchargement. Il ne vous reste alors plus qu'à
+    patienter...
+
+    :Note:
+    Les boutons "Effacer" et "Rafraîchir" servent
+    respectivement à vider les formulaires de recherche
+    et recharger la liste des sites cibles (charge les
+    scripts du dossier correspondant).
+
+
+. Export .
+
+    Il existe plusieurs solutions d'export de votre recherche:
+        1 - Export local
+            Aller dans (Fichier > Enregistrer dans un fichier)
+        2 - Export mail
+            Aller dans (Fichier > Envoyer Courriel)
+        3 - Export BDD
+            Aller dans (Paramètres > Base de données)
+
+
+
+

@@ -1,0 +1,59 @@
+//https://www.vinylcorner.fr/catalogsearch/result/?q=Bob+marley&category=9
+urlDirSearch = "catalogsearch/result"
+inSearchSym = "q="
+inGenderSym = null
+inDateSym = null
+inPriceMinSym = null
+inPriceMaxSym = null
+
+
+xpWrapper = "/html/body/div[2]/main/div/div/div[3]/div[3]/ol"
+xpCell = "li"
+xpTitle = "div/div[2]/strong/a"
+xpPrice = "div/div[2]/div/div/div/span/span/span"
+
+ssl_enabled = false
+include script/include/scrapDependency
+include script/include/searchQuery
+
+wrap = xpGet(page, xpWrapper)
+if ((wrap == null) || (wrap.length() == 0))
+    println(wrap.length())
+    println("Error: No output found in \"" + searchQuery + "\"")
+    println(xpWrapper)
+	return
+endif
+block = wrap.get(0)
+if (block == null)
+    println("Error: No output found in \"" + searchQuery + "\"")
+    return
+endif
+cell = xpGet(block, xpCell)
+if (empty(cell) == true)
+    println("Error: No output found in \"" + searchQuery + "\"")
+    return
+endif
+lenCell = cell.length()
+i = 0
+while (i < lenCell)
+    item = cell.get(i)
+    title = ""
+    gender = "0"
+    date = ""
+    price = ""
+    source = ""
+
+    block = xpGet(item, xpTitle)
+    println(block.getAttribute("href")) // Debug
+    source = baseDomain + block.get(0).getAttribute("href").substring(1)
+    title = block.get(0).getText()
+    block = xpGet(item, xpPrice)
+    price = block.getText()
+    price = price.split("€")
+    price = price.get(0)
+
+    outputTable.add(newRow(title, gender, date, price, source))
+    pause(250)
+    i += 1
+wend
+webClient.close()

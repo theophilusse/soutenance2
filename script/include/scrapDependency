@@ -1,0 +1,67 @@
+include script/include/badInput
+include script/include/outputTable
+
+func xpGet(page, xpath)
+	return (page.getByXPath(xpath))
+endfunc
+
+func normalize(s)
+    return (s.replaceAll(" ", "+"))
+endfunc
+
+func makeQuery(ss, is, sg, ig, sd, id, spmin, ipmin, spmax, ipmax)
+    amp = "&"
+    query = "?"
+    if ((empty(is) == false) && (empty(ss) == false))
+        query += ss + normalize(is)
+    endif
+    if ((empty(ig) == false) && (empty(sg) == false))
+        if ((query == "?") == false)
+            query += amp
+        endif
+        query += sg + normalize(ig)
+    endif
+    if ((empty(id) == false) && (empty(sd) == false))
+        if ((query == "?") == false)
+            query += amp
+        endif
+        query += sd + normalize(id)
+    endif
+    if ((empty(ipmin) == false) && (empty(spmin) == false))
+        if ((query == "?") == false)
+            query += amp
+        endif
+        query += spmin + normalize(ipmin)
+    endif
+    if ((empty(ipmax) == false) && (empty(spmax) == false))
+        if ((query == "?") == false)
+            query += amp
+        endif
+        query += spmax + normalize(ipmax)
+    endif
+    return (query)
+endfunc
+
+inTitle = inputData.get(0).get(0)
+inGender = inputData.get(0).get(1)
+inDate = inputData.get(0).get(2)
+inPriceMin = inputData.get(0).get(3)
+inPriceMax = inputData.get(0).get(4)
+
+tmpDate = inDate.split("[/]")
+if (tmpDate.length() != 3)
+    inDate = ""
+else
+    inDate = tmpDate.get(3)
+endif
+
+
+println(inTitle)
+println(inGender)
+println(inDate)
+println(inPrice)
+println(inSource)
+
+baseDomain = (ssl_enabled == true ? "https://" : "http://") + scriptName + "/"
+baseUrl = baseDomain + urlDirSearch + "/"
+searchQuery = baseUrl + makeQuery(inSearchSym, inTitle, inGenderSym, inGender, inDateSym, inDate, inPriceMinSym, inPriceMin, inPriceMaxSym, inPriceMax)

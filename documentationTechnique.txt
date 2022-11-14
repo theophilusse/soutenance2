@@ -1,0 +1,220 @@
+MANUEL DEVELOPPEUR
+
+Table des matieres:
+    A - Introduction
+    B - Environnement
+    C - Threads
+    D - Modules d'export
+    E - Scrapping
+    F - Syntaxe script
+    G - Ajout site
+    H - Module script
+    I - Ajout de fonctionnalités natives
+
+------------------------------------------------------------------------------------------------------------------------
+
+ A) Introduction
+
+    Cette documentation aborde l'aspect technique de l'application; de l'interaction des
+differentes classes à l'ajout de nouveaux sites.
+
+------------------------------------------------------------------------------------------------------------------------
+
+ B) Environnement
+
+    Vous évoluez au sein d'une IHM créé sous JavaFx avec SceneBuilder. Chaques
+fenêtres possèdant son propre contrôleur, vous trouverez les classes
+correspondantes dans les fichiers sources ayant pour suffixe "controller".
+Les méthodes précédés par le terme @FXML sont les fonctionnalités apellés par
+le biais d'évènements (boutons...).
+
+------------------------------------------------------------------------------------------------------------------------
+
+ C) Threads
+
+    Les différents contrôlleurs peuvent faire appel à des méthodes dont le
+temps d'exécution est incertain, par exemple l'envoie d'informations sur un
+serveur de base de donnée. Le multithreading est donc utilisé, par le biais
+de la classe "LaunchTask", pour fluidifier l'expérience utilisateur.
+
+    Cette dernière implémente dans son constructeur le nom de la fonctionnalité
+à apeller (objet String), associé à une de donné (objet Multi, cf. Module script).
+
+    Une fois la ou les instances prêtes, à vous n'avez plus qu'à sérialiser leur
+lancement à l'aide de la méthode "run" héritée de la classe Thread.
+
+------------------------------------------------------------------------------------------------------------------------
+
+ D) Modules export
+
+    L'export des données en sortie se décline de trois manières. Soit par simple écriture
+en local (classe Terminale), soit sur le réseau par mail ou dans une base de données.
+Leur implémentation se fait via la classe "LaunchThread", à l'aide de 
+Sendinblue et JDBC.
+
+------------------------------------------------------------------------------------------------------------------------
+
+ E) Scrapping
+
+    Chaque sites cibles est matérialisé par un script portant l'adresse IP ou le nom
+de domaine de ce dernier (comme discogs.com), localisé dans le répertoire "script"
+afin d'être ajouté dans la liste des sites cibles. Chaque site sélectionné occupe
+un thread.
+
+------------------------------------------------------------------------------------------------------------------------
+
+ F) Syntaxe script
+
+    La syntaxe des scripts est assez classique, ormis sur quelques détails. Il s'agit
+d'un langage fonctionnel dont voici quelques règles:
+
+    - Une instruction par ligne (assignation comprise).
+    - Pas de point-virgule.
+    - Pas de priorité des opérations.
+    - Les variables sont déclarés à la volée.
+    - Leur type est volatile.
+    - Objet String partiellement implémentée.
+    - Les nombres réels constant doivent être suivis de 'f' ou de 'd'.
+    - Le scope quand à lui est uniquement local (pas de variable globale, tout doit être
+        passé en argument de vos fonctions).
+    - La structure de contrôles "for" n'est pas implémentée.
+    - Les opérateurs "++" et "--" ne sont pas implémentés.
+    - Pas de concaténation de méthode.
+    - Le préprocesseur implémente le terme "include"
+        (suivis du chemin vers le fichier, sans double quote) ainsi que des variables
+        précédés par le préfix "@" (exemple "@DATE").
+    - Utiliser le terme "func" pour déclarer une fonction.
+    - Les délimiteurs pour les structures "if", "while" et "func" sont respectivement
+        "endif", "wend" et "endfunc".
+    - Chaque opération booléenne doit être encapsulé entre
+        parenthèses, y compris pour les expressions ternaires.
+    - Déclarer une liste: maListe Array
+    - Acceder à une liste: .add(E) .set(index, E) .get(index) .remove(index)
+    - Déclarer un tableau: nomVar Table typeCol_1 nomCol_0 typeCol_1 nomCol_1 [ ... ]
+        Les types (liste non exaustive):
+            s: String
+            b: boolean
+            c: char
+            i: int
+            f: float
+            d: double
+            r: Array (classe Row)
+            t: Table (classe Table)
+            P: HtmlPage
+            H: HtmlElement
+            E: Empty (contient null)
+        Exemple: monTableau Table s titre i identificateur
+    - Acceder à un tableau: .add(E) .set(index, E) .get(index) .remove(index)
+    - Déclarer un WebClient: monWc WebClient
+    - Les mots "null", "true" et "false" sont également réservés.
+
+    -> Pour obtenir la liste complète des verbes, méthodes et autres fonctions
+natives, veuillez vous référer aux tables "verb", "nativeMethod" et "nativeFunction"
+déclarés dans la classe "Parser".
+
+------------------------------------------------------------------------------------------------------------------------
+
+ G) Ajout site
+
+    - Créez dans le répertoire "script" un nouveau fichier nommé par l'IP ou le nom
+        de domaine du site cible.
+
+    - Copier-collez puis adaptez le code source, prérequis:
+        urlDirSearch = "search" // Répertoir vers lequel s'effectue votre recherche
+        // Parametres de la requete
+        inSearchSym = "q=" // Champ titre
+        inGenderSym = "genre_exact=" // Champ genre
+        inDateSym = "decade=" // Champ date
+        inPriceMinSym = null // Champ prix min
+        inPriceMaxSym = null // Champ prix max
+
+        // Accesseurs (XPath)
+        xpWrapper = "/html/body/div[1]/div[4]/div[3]/div[2]/ul" // Accesseur liste
+        xpCell = "li" // Accesseur elements
+
+        xpTitle = "div[1]/a" // Acesseur champ titre
+        xpGender = "div[2]/a" // Acesseur champ genre
+        xpDate = "div[3]/a" // Acesseur champ date
+        xpPrice = "div[3]/a" // Accesseur champ prix
+
+        // Dependences
+        ssl_enabled = false // https ?
+        include script/include/scrapDependency // Dependences, requete
+        include script/include/searchQuery // Telechargement
+
+    - Remplissez le tableau "outputTable" avec la méthode "add", dans laquelle
+        vous passerez un appel à "newRow" tel que:
+            title = htmlElement_title.getText()
+            // ...
+            outputTable.add(newRow(title, gender, date, price, source))
+
+    - Conseil:
+        Utilisez la fonction "pause(ms)" avant d'utiliser "loadpage(url)" du webClient
+        dans une boucle pour ne pas surcharger le site ciblé.
+
+    - Un fois votre script rédigé, pensez à rafraîchir dans l'IHM la liste des sites
+        grâce au bouton "Rafraîchir".
+
+------------------------------------------------------------------------------------------------------------------------
+
+ H) Module script
+
+    Il s'agit de la classe Script utilisant un ensemble de classes. L'instantiation
+d'un objet script requiert un chemin de fichier ou directement un tableau de String
+(lignes de code). Appeller la méthode "result" de implémantée de l'interface
+Computable pour en éxecuter son contenu, prenant optionellement en paramètre une
+HashMap de variables prédéclarées. La méthode retourne la variable passée dans
+"return" (type Multi). Si votre script ne retourne rien, "result" retourne dans un
+Multi l'ensemble des variable du scope racine de votre script, indexées dans une
+HashMap (identificateur de type HashMap: 'K').
+
+    -> La classe Multi est une classe servant à stocker une donnée. La nature de la
+donnée (type) étant également stockée (repésentée par un identificateur ASCII),
+elle contient les méthodes natives. Les fonctions natives quand à elles,
+implémentées directement dans la classe Script.
+
+    -> La classe Row (Array) est une classe permettant de représenter une liste
+(ou chaîne), que la classe Table empile pour synthétiser une entrée en base de
+donnée (donnée attendue en sortie de script).
+
+    -> La classe Parser est une collection de méthodes statiques servant au
+        traitement du code.
+
+    -> La classe FunctionDefinition permet de stocker une définition de fonction.
+
+    -> La classe FunctionCall (Computable) appelle une function
+        préalablement définit.
+
+    -> La classe Expression (Computable) synthétise récursivement des
+        opérations complexes.
+
+------------------------------------------------------------------------------------------------------------------------
+
+ I) Ajout de fonctionnalités natives
+
+    -> Nouvelle méthode:
+        1. Ajouter le nom de la méthode dans le tableau "nativeMethod" de
+            la classe Parser.
+        2. Définir la méthode correspondante dans Multi.
+        3. Ajouter l'appel de cette méthode dans le scheduler de la méthode
+            privée "methodCall" de Expression.
+
+    -> Nouvelle fonction native:
+        1. Ajouter le nom de la fonction dans le tableau "nativeFunction" de
+            la classe Parser.
+        2. Ajouter cette fonction dans le scheduler du constructeur de Expression.
+
+    -> Nouveau verbe:
+        1. Ajouter le nom du verbe dans le tableau "verb" de la classe Parser.
+        2. Ajouter le code du verbe dans la méthode privée "parseVerb" de Script.
+
+    -> Nouvelle variable préprocesseur:
+        1. Ajouter une variable au scheduler de la méthode privée
+            "preprocessor" de Script.
+
+    -> Nouveau type de donnée:
+        1. Choisir un caractère ASCII non attribué.
+        2. Ajouter une String de retour dans le scheduler de la méthode "toString"
+            de Multi.
+        3. Ajouter si besoin une méthode "operationMONTYPE" à la classe Expression,
+            puis l'ajouter au scheduler de la méthode "operation".

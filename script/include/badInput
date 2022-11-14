@@ -1,0 +1,7 @@
+func empty(s)
+    return (((s == null) || (s.length() == 0)) ? true : false)
+endfunc
+
+if ((empty(inSearchSym) == true) && (empty(inGenderSym) == true) && (empty(inDateSym) == true))
+	return
+endif
